@@ -18,18 +18,18 @@ local function sleepwalk(player)
 		newpos.z = newpos.z - 1
 	end
 	-- if there's enough space for the player and the node below is walkable
-	if minetest.get_node(pos).name == "air" and minetest.get_node({x = pos.x, y = pos.y + 1, z = pos.z}).name == "air" and minetest.get_node({x = pos.x, y = pos.y - 1, z = pos.z}).walkable == true then
+	if minetest.get_node(pos).name == "air" and minetest.get_node({x = pos.x, y = pos.y + 1, z = pos.z}).name == "air" and minetest.get_node({x = pos.x, y = pos.y - 1, z = pos.z}).walkable ~= false and minetest.get_node({x = pos.x, y = pos.y - 1, z = pos.z}).name ~= "air" then
 		player:moveto(newpos)
 	end
 end
 
 local function timer()
 	local connected_players = minetest.get_connected_players()
-	if connected_players == nil then
+	local nr_connected_players = table.getn(connected_players)
+	if nr_connected_players == 0 then
 		minetest.after(sleepwalk_timeout, timer)
 		return
 	end
-	local nr_connected_players = #connected_players
 	local unlucky_player = connected_players[ math.random( nr_connected_players ) ]
 	if math.random(sleepwalk_chance) == 1 then
 		sleepwalk(unlucky_player)
