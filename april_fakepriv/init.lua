@@ -18,24 +18,27 @@ local function timer()
 			--run the prank
 			-- pick a random grantor
 			local random_number = math.random( nr_connected_players )
-			local fake_admin = connected_players[ random_number ]
+			local fake_admin = connected_players[ random_number ]:get_player_name()
 			-- remove the grantor from table and pick a random grantee
-			connected_players[ random_number ] = nil
-			random_number = math.random( nr_connected_players )
-			local victim = connected_players[ random_number ]
+			table.remove(connected_players, random_number)
+			random_number = math.random( nr_connected_players - 1)
+			local victim = connected_players[ random_number ]:get_player_name()
 			-- give or take?
 			if math.random(2) == 1 then
 				-- pick a fake privilege
 				local fakepriv = fakeprivs[ math.random(#fakeprivs) ]
 				core.chat_send_player(victim, fake_admin .. " granted you privileges: " .. fakepriv)
 			else
-				local realprivs = minetest.get_player_privs(victim)
+				local realprivs = {}
+				for k, _ in pairs(minetest.get_player_privs(victim)) do
+					realprivs[#realprivs + 1] = k
+				end
 				core.chat_send_player(victim, fake_admin .. " revoked privileges from you: " .. realprivs[ math.random(#realprivs) ])
 			end
 		end
 	end
 	-- recalculate timeout
-	minetest.after(fakepriv_timeout / nr_connected_players + 1, timer)
+	minetest.after(fakepriv_timeout / (nr_connected_players + 1), timer)
 end
 
 timer()
