@@ -1,10 +1,10 @@
 minetest.log('action', '[MOD] April Craft mod loading...')
 
-local craft_chance = 100 -- one out of hundred craftings goes wrong (number can not be less than 2)
+local craft_chance = 100 -- one out of hundred craftings goes wrong
 
 local function april_craft(itemstack, player, old_craft_grid, craft_inv)
 	local node_count = itemstack:get_count()
-	local random_number = math.random(2 * hallucination_chance)
+	local random_number = math.random(2 * craft_chance)
 	if random_number == 1 then --replace craft output with a random node
 		local craft_nodes = {}
 		for v in pairs(minetest.registered_nodes) do
